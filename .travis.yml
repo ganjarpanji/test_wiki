@@ -6,5 +6,30 @@ script:
       if [ -n "$GITHUB_API_KEY" ]; then
        git config user.name "Travis CI"
        git config user.email "ganjar@sense-os.nl"
-       git push https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git docs:master --force &2>/dev/null
+
+       #check latest changed file
+       PATH_TO_FILE=$(git diff-tree --no-commit-id --name-only -r $COMMIT_ID)
+
+       #add line to each file
+
+       count=0
+       while IFS='' read -r line || [[ -n "$line" ]]; do
+         
+          echo $'\r' >> "$line"
+          git add $line
+          echo "File $count : $line done!"
+          (( count++ ))
+
+       done <<< "$PATH_TO_FILE"
+
+       
+       $COMMIT_MESSAGE=`git log -1 --pretty=%B`
+
+       git commit -m "$COMMIT_MESSAGE"
+
+       echo "This is List of file changed =  $PATH_TO_FILE"
+       echo "This is Commit message = $COMMIT_MESSAGE"
+       echo "This is Repo Slug = $TRAVIS_REPO_SLUG"
+
+       git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force &2>/dev/null
       fi
