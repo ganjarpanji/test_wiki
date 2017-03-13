@@ -33,5 +33,5 @@ script:
          echo "This is Commit message = $COMMIT_MESSAGE"
          echo "This is Repo Slug = $TRAVIS_REPO_SLUG"
 
-         git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force
+         git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force --quiet
       fi
