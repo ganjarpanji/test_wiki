@@ -13,6 +13,7 @@ script:
          #check latest changed file
          PATH_TO_FILE=$(git diff-tree --no-commit-id --name-only -r $COMMIT_ID)
 
+         git checkout docs
          #add line to each file
          count=0
          while IFS='' read -r line || [[ -n "$line" ]]; do
