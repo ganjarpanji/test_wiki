@@ -17,10 +17,29 @@ script:
          #add line to each file
          count=0
          while IFS='' read -r line || [[ -n "$line" ]]; do
-           
-            echo $'\r' >> "$line"
-            git add "$line"
-            echo "File $count : $line done!"
+            
+            if [ "${line:0:1}" == "A" ]
+            then
+                echo $'\r' >> "${line:2}"
+                git add "${line:2}"
+                echo "File $count : ${line:2} done Added!"
+                echo " "
+
+            elif [ "${line:0:1}" == "D" ]
+            then
+                echo $'\r' >> "${line:2}"
+                git rm "${line:2}"
+                echo "File $count : ${line:2} done Deleted!"
+                echo " "
+                
+            elif [ "${line:0:1}" == "M" ]
+            then
+                echo $'\r' >> "${line:2}"
+                git rm "${line:2}"
+                echo "File $count : ${line:2} done Modified!"
+                echo " "
+            fi
+
             (( count++ ))
 
          done <<< "$PATH_TO_FILE"
