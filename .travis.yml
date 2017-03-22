@@ -11,7 +11,7 @@ script:
          COMMIT_ID=`git log -1 --pretty=%h`
 
          #check latest changed file
-         PATH_TO_FILE=$(git diff-tree --no-commit-id --name-only -r $COMMIT_ID)
+         PATH_TO_FILE=$(git diff-tree --no-commit-id --name-status -r $COMMIT_ID)
 
          git checkout docs
          #add line to each file
@@ -31,11 +31,11 @@ script:
                 git rm "${line:2}"
                 echo "File $count : ${line:2} done Deleted!"
                 echo " "
-                
+
             elif [ "${line:0:1}" == "M" ]
             then
                 echo $'\r' >> "${line:2}"
-                git rm "${line:2}"
+                git add "${line:2}"
                 echo "File $count : ${line:2} done Modified!"
                 echo " "
             fi
