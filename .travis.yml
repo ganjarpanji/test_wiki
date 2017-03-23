@@ -63,7 +63,7 @@ script:
              done < $deletedfile 
 
              git commit -m "DEL-$COMMIT_MESSAGE"
-             git push https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
+             git push https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git --quiet
 
              cd ../../
          else
@@ -94,7 +94,7 @@ script:
 
              git commit -m "ADD-$COMMIT_MESSAGE"
 
-             git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force
+             git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force --quiet
          else
              echo "Nothing file changed or added!"
          fi
