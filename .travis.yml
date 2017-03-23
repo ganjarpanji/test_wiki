@@ -38,7 +38,11 @@ script:
                             echo "$line" >> $addormodfile
                             echo "File $count : ${line:2} added to log!"
                             echo " "
-              fi
+             elif [ "$line" == *".yml"* ]
+                        then
+                            echo "yml file ignored"
+                            exit 0
+             fi
           
          done <<< "$output"
 
