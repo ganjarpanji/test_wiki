@@ -5,4 +5,4 @@ script:
   - |
       if [ -n "$GITHUB_API_KEY" ]; then
          echo "test"
-    fi
+      fi
