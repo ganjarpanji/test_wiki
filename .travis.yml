@@ -44,17 +44,17 @@ script:
           
          done <<< "$PATH_TO_FILE"
 
-         mkdir wiki && cd wiki
-
-         git clone https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
-         echo " "
-
-         cd test_wiki.wiki
-
-         mv ../../$deletedfile ./
-
          #Delete file
          if [ -f $deletedfile ]; then
+             mkdir wiki && cd wiki
+
+             git clone https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
+             echo " "
+
+             cd test_wiki.wiki
+
+             mv ../../$deletedfile ./
+             
              while IFS='' read -r line || [[ -n "$line" ]]; do
                   git rm "${line:2}"
                   echo "File $count = ${line:2} Deleted!"
@@ -64,12 +64,14 @@ script:
 
              git commit -m "DEL-$COMMIT_MESSAGE"
              git push https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
+
+             cd ../../
          else
-            echo "Nothing deleted file!"
+                echo "Nothing deleted file!"
          fi
 
-         cd ../../
-
+         
+         #Add or modified file
          if [ -f $addormodfile ]; then
              git checkout docs
 
@@ -94,6 +96,6 @@ script:
 
              git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force
          else
-            echo "Nothing file changed or added!"
+             echo "Nothing file changed or added!"
          fi
       fi
