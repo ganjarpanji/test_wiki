@@ -4,8 +4,8 @@ branches:
 script: 
   - |
       if [ -n "$GITHUB_API_KEY" ]; then
-         git config user.name "Travis CI"
-         git config user.email "ganjar@sense-os.nl"
+         git config --global user.name "Travis CI"
+         git config --global user.email "ganjar@sense-os.nl"
 
          #Get current commit id
          COMMIT_ID=`git log -1 --pretty=%h`
@@ -42,7 +42,7 @@ script:
               
              fi
           
-         done <<< "$output"
+         done <<< "$PATH_TO_FILE"
 
          mkdir wiki && cd wiki
 
@@ -54,39 +54,46 @@ script:
          mv ../../$deletedfile ./
 
          #Delete file
-         while IFS='' read -r line || [[ -n "$line" ]]; do
-              git rm "${line:2}"
-              echo "File $count = ${line:2} Deleted!"
-              echo " "
-              (( count++ ))
-         done < $deletedfile 
+         if [ -f $deletedfile ]; then
+             while IFS='' read -r line || [[ -n "$line" ]]; do
+                  git rm "${line:2}"
+                  echo "File $count = ${line:2} Deleted!"
+                  echo " "
+                  (( count++ ))
+             done < $deletedfile 
 
-         git commit -m "DEL-$COMMIT_MESSAGE"
-         git push https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
-
+             git commit -m "DEL-$COMMIT_MESSAGE"
+             git push https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
+         else
+            echo "Nothing deleted file!"
+         fi
 
          cd ../../
 
-         git checkout docs
+         if [ -f $addormodfile ]; then
+             git checkout docs
 
-         #Add or modified file
-         while IFS='' read -r line || [[ -n "$line" ]]; do
-            if [ "${line:0:1}" == "A" ]
-                    then
-                        git add "${line:2}"
-                        echo "File $count = ${line:2} Added!"
-                        echo " "
-            elif [ "${line:0:1}" == "M" ]
-                    then
-                        git add "${line:2}"
-                        echo "File $count = ${line:2} Modified!"
-                        echo " "
-            fi
-            (( count++ ))
-         done < $addormodfile
+             #Add or modified file
+             while IFS='' read -r line || [[ -n "$line" ]]; do
+                if [ "${line:0:1}" == "A" ]
+                        then
+                            git add "${line:2}"
+                            echo "File $count = ${line:2} Added!"
+                            echo " "
+                elif [ "${line:0:1}" == "M" ]
+                        then
+                            git add "${line:2}"
+                            echo "File $count = ${line:2} Modified!"
+                            echo " "
+                fi
+                (( count++ ))
+             done < $addormodfile
 
 
-         git commit -m "ADD-$COMMIT_MESSAGE"
+             git commit -m "ADD-$COMMIT_MESSAGE"
 
-         git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force
+             git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force
+         else
+            echo "Nothing file changed or added!"
+         fi
       fi
