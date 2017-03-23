@@ -85,6 +85,7 @@ script:
         git commit -m "ADD-$COMMIT_MESSAGE"
 
         git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force
+    fi
 
 
 
