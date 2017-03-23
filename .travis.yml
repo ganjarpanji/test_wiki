@@ -13,11 +13,11 @@ script:
          #check latest changed file
          PATH_TO_FILE=$(git diff-tree --no-commit-id --name-status -r $COMMIT_ID)
 
-        addormodfile='addormodfile.txt'
-        deletedfile='delete.txt'
+         addormodfile='addormodfile.txt'
+         deletedfile='delete.txt'
 
-        #log all changed files
-        while IFS='' read -r line || [[ -n "$line" ]]; do
+         #log all changed files
+         while IFS='' read -r line || [[ -n "$line" ]]; do
 
               if [ "${line:0:1}" == "A" ]
                         then
@@ -40,33 +40,35 @@ script:
                             echo " "
               fi
           
-        done <<< "$output"
+         done <<< "$output"
 
-        mkdir wiki && cd wiki
+         mkdir wiki && cd wiki
 
-        git clone https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
-        echo " "
+         git clone https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
+         echo " "
 
-        cd test_wiki.wiki
+         cd test_wiki.wiki
 
-        mv ../../$deletedfile ./
+         mv ../../$deletedfile ./
 
-        #Delete file
-        while IFS='' read -r line || [[ -n "$line" ]]; do
+         #Delete file
+         while IFS='' read -r line || [[ -n "$line" ]]; do
               git rm "${line:2}"
               echo "File $count = ${line:2} Deleted!"
               echo " "
               (( count++ ))
-        done < $deletedfile 
+         done < $deletedfile 
 
-        git commit -m "DEL-$COMMIT_MESSAGE"
-        git push https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
+         git commit -m "DEL-$COMMIT_MESSAGE"
+         git push https://ganjarpanji:$GITHUB_API_KEY@github.com/ganjarpanji/test_wiki.wiki.git
 
 
-        cd ../../
+         cd ../../
 
-        git checkout docs
-        while IFS='' read -r line || [[ -n "$line" ]]; do
+         git checkout docs
+
+         #Add or modified file
+         while IFS='' read -r line || [[ -n "$line" ]]; do
             if [ "${line:0:1}" == "A" ]
                     then
                         git add "${line:2}"
@@ -79,13 +81,10 @@ script:
                         echo " "
             fi
             (( count++ ))
-        done < $addormodfile
+         done < $addormodfile
 
 
-        git commit -m "ADD-$COMMIT_MESSAGE"
+         git commit -m "ADD-$COMMIT_MESSAGE"
 
-        git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force
+         git push https://ganjarpanji:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG.wiki.git docs:master --force
     fi
-
-
-
